@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+</head>
+<head>
+  
+  <meta charset="utf-8">
+  <meta name="description"
+        content="Uni-Renderer: Unifying Rendering and Inverse Rendering Via Dual Stream Diffusion.">
+  <meta name="keywords" content="Rendering, Inverse Rendering, Image generation, Diffusion Models">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Uni-Renderer: Unifying Rendering and Inverse Rendering Via Dual Stream Diffusion</title> 
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYVRSFMDRL"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+
+    gtag('config', 'G-PYVRSFMDRL');
+  </script>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <!-- <link rel="icon" href="./static/images/favicon.svg"> -->
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+</head>
+<body>
+
+<!-- <nav class="navbar" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+  </div>
+  <div class="navbar-menu">
+    <div class="navbar-start" style="flex-grow: 1; justify-content: center;">
+      <a class="navbar-item" href="https://keunhong.com">
+      <span class="icon">
+          <i class="fas fa-home"></i>
+      </span>
+      </a>
+
+      <div class="navbar-item has-dropdown is-hoverable">
+        <a class="navbar-link">
+          More Research
+        </a>
+        <div class="navbar-dropdown">
+          <a class="navbar-item" href="https://hypernerf.github.io">
+            HyperNeRF
+          </a>
+          <a class="navbar-item" href="https://nerfies.github.io">
+            Nerfies
+          </a>
+          <a class="navbar-item" href="https://latentfusion.github.io">
+            LatentFusion
+          </a>
+          <a class="navbar-item" href="https://photoshape.github.io">
+            PhotoShape
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</nav> -->
+
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-1 publication-title">Uni-Renderer: Unifying Rendering and Inverse Rendering Via Dual Stream Diffusion</h1>
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">
+              <a href="https://zhifeichen097.github.io/">Zhifei Chen</a><sup>1,*</sup>,</span>
+            <span class="author-block">
+              <a href="https://scholar.google.com/citations?user=I6_dXvEAAAAJ&hl=zh-CN">Tianshuo Xu</a><sup>1,*</sup>,</span>
+            <span class="author-block">
+              <a href="https://g3956.github.io/wenhangge.github.io/">Wenhang Ge</a><sup>1,*</sup>,
+            </span>
+            <span class="author-block">
+              <a href="https://yuevii.github.io/">Leyi Wu</a><sup>1</sup>,
+            </span>
+            <span class="author-block">
+              <a href="http://me.starydy.xyz/">Dongyu Yan</a><sup>1</sup>,
+            </span>
+            <span class="author-block">
+              <a href="https://jingheya.github.io/">Jing He</a><sup>1</sup>,
+            </span>
+            <span class="author-block">
+              <a href="https://wileewang.github.io/">Luozhou Wang</a><sup>1</sup>,
+            </span>
+            <span class="author-block">
+            Lu Zeng</a><sup>3</sup>,
+            </span>
+            <span class="author-block">
+            Shunsi Zhang</a><sup>3</sup>,
+            </span>
+            <span class="author-block">
+              <a href="https://www.yingcong.me/">Ying-Cong Chen</a><sup>1,2,&dagger;</sup>,
+            </span>
+          </div>
+          <style>
+            .author-block {
+              margin-right: 10px;
+            }
+          </style>
+          <div class="is-size-5 publication-authors">
+            <span class="author-block"><sup>1</sup>HKUST(GZ),</span>
+            <span class="author-block"><sup>2</sup>HKUST</span>
+            <span class="author-block"><sup>3</sup>Guangzhou Quwan Network Technology</span>
+          </div>
+          <p class="author-notes">
+            <span>* Equal contribution</span>
+            <span>&dagger; Corresponding author</span>
+          </p>
+
+          
+
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <!-- PDF Link. -->
+              <span class="link-block">
+                <a href="https://arxiv.org/pdf/2412.15050"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                  </span>
+                  <span>Paper</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href="https://arxiv.org/abs/2412.15050"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                  </span>
+                  <span>arXiv</span>
+                </a>
+              </span>
+              <!-- Video Link.
+              <span class="link-block">
+                <a href="https://www.youtube.com/watch?v=MrKrnHhk8IA"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-youtube"></i>
+                  </span>
+                  <span>Video</span>
+                </a>
+              </span> -->
+              <!-- Code Link. -->
+              <span class="link-block">
+                <a href="https://github.com/EnVision-Research/Uni-Renderer"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fab fa-github"></i>
+                  </span>
+                  <span>Code</span>
+                  </a>
+              </span>
+              <!-- Dataset Link.
+              <span class="link-block">
+                <a href="https://github.com/google/nerfies/releases/tag/0.1"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="far fa-images"></i>
+                  </span>
+                  <span>Data</span>
+                  </a> -->
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+        <img src="./static/images/teaser.png" alt="Teaser Image" style="width: 100%;">
+      <h2 class="subtitle has-text-centered">
+        <strong>Uni-renderer</strong></span> empowers the generative model to function both as a renderer and an inverse renderer by
+        approximating the rendering equation using a data-driven approach.
+      </h2>
+    </div>
+  </div>
+</section>
+
+
+<!-- <section class="hero is-light is-small">
+  <div class="hero-body">
+    <div class="container">
+      <div id="results-carousel" class="carousel results-carousel">
+        <div class="item item-steve">
+          <video poster="" id="steve" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/steve.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-chair-tp">
+          <video poster="" id="chair-tp" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/chair-tp.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-shiba">
+          <video poster="" id="shiba" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/shiba.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-fullbody">
+          <video poster="" id="fullbody" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/fullbody.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-blueshirt">
+          <video poster="" id="blueshirt" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/blueshirt.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-mask">
+          <video poster="" id="mask" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/mask.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-coffee">
+          <video poster="" id="coffee" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/coffee.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-toby">
+          <video poster="" id="toby" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/toby2.mp4"
+                    type="video/mp4">
+          </video>
+        </div>
+      </div>
+    </div>
+  </div>
+</section> -->
+
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <!-- Abstract. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            Rendering and inverse rendering are pivotal tasks in both computer vision and graphics. The rendering equation is the core of the two tasks, as an ideal conditional distribution transfer function from intrinsic properties to RGB images. Despite achieving promising results of existing rendering methods, they merely approximate the ideal estimation for a specific scene and come with a high computational cost. Additionally, the inverse conditional distribution transfer is intractable due to the inherent ambiguity. To address these challenges, we propose a data-driven method that jointly models rendering and inverse rendering as two conditional generation tasks within a single diffusion framework. Inspired by UniDiffuser, we utilize two distinct time schedules to model both tasks, and with a tailored dual streaming module, we achieve cross-conditioning of two pre-trained diffusion models. This unified approach, named Uni-Renderer, allows the two processes to facilitate each other through a cycle-consistent constrain, mitigating ambiguity by enforcing consistency between intrinsic properties and rendered images. Combined with a meticulously prepared dataset, our method effectively decomposition of intrinsic properties and demonstrating a strong capability to recognize changes during rendering.
+          </p>
+        </div>
+      </div>
+    </div>
+    <!--/ Abstract. -->
+
+    <!-- Paper video. -->
+    <div class="image-column" style="display: flex; flex-direction: column; align-items: center; gap: 20px; margin-top: 20px;">
+      <div style="text-align: center; width: 100%;">
+        <h3 style="font-size: 24px;"><strong>Our Method</strong></h3>
+        <img src="./static/images/pipeline.png" alt="Image 1" style="width: 100%;">
+        <p style="font-size: 15px; margin-top: 10px; text-align: left;">
+          <strong>
+              During training, both attribute and RGB images are input to a unified model with pre-trained VAE encoders. The timestep selector plays a crucial role by adjusting the timesteps for each branch. Specifically, it ensures that one branch (either the attribute or RGB) has a timestep of 0, while the other branch selects a timestep from \( t \in [0, T] \). This mechanism allows our model to effectively learn the conditional distributions \( q(\mathbf{x_0}|\mathbf{y_0}) \), \( q(\mathbf{y_0}|\mathbf{x_0}) \) in alternating iterations. During rendering and inverse rendering, the corresponding conditions are input to the model with a timestep of 0, and the attributes/RGB images are generated through a sampled noise. (The VAE encoder and decoder are omitted for simplicity.)
+          </strong>
+      </p>
+      <!-- </div>
+      <div style="text-align: center; width: 100%;">
+        <h3 style="font-size: 24px;"><strong>Stage II</strong></h3>
+        <img src="./static/images/stage2-1.png" alt="Image 2" style="width: 100%;">
+      </div> -->
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container is-max-desktop">
+
+    <!-- Paper video. -->
+    <div class="image-column" style="display: flex; flex-direction: column; align-items: center; gap: 20px; margin-top: 20px;">
+      <div style="text-align: center; width: 100%;">
+        <h3 style="font-size: 24px; margin-bottom: 20px; margin-top: 0px;"><strong>Our Application</strong></h3>
+        <img src="./static/images/app.png" alt="Image 2" style="width: 100%;">
+        <p style="font-size: 15px; margin-top: 10px; text-align: left;">We demonstrate smooth changes via rendering for different metallic and roughness strengths. The rendering is performed giving different combinations of the attributes. When the roughness value was set to 1, the cake and clock case shown in the top left are without specular highlights. When the metallic value was set to 1, the orange and baseball cases appeared to be metallic and revealing object illumination. <strong>Best viewed in color.</strong></p>
+      </div>
+      <div style="text-align: center; width: 100%;">
+        <h3 style="font-size: 24px; margin-bottom: 20px; margin-top: 20px;"><strong>Comparison with other methods</strong></h3>
+        <img src="./static/images/cmp1.png" alt="Image 2" style="width: 100%;">
+        <p style="font-size: 15px; margin-top: 10px; text-align: left;"><strong>Albedo comparison. </strong>Albedo Comparison of Uni-Renderer with baseline methods. We compared 4 learning-based methods and 2 optimization-based methods. Among all, Uni-renderer yields the most realistic results.  <strong>Best viewed in color.</strong></p>
+      </div>
+      <div style="text-align: center; width: 100%;">
+        <img src="./static/images/cmp2.png" alt="Image 2" style="width: 100%;">
+        <p style="font-size: 15px; margin-top: 10px; text-align: left;"><strong>Relighting Comparsion. </strong>The relighting comparison is performed on validation objects. We first inverse render the input RGB to acquire the intrinsics, and then we updated the lighting information to get the relighting results. The leftmost column is the reference environment lighting.  <strong>Best viewed in color.</strong></p>
+      </div>
+      <div style="text-align: center; width: 100%;">
+        <img src="./static/images/cmp3.png" alt="Image 2" style="width: 100%;">
+        <p style="font-size: 15px; margin-top: 10px; text-align: left;"><strong>Normal Comparison. </strong>Normal Comparison of Uni-Renderer with others methods.<strong>Best viewed in color.</strong></p>
+      </div>
+      <div style="text-align: center; width: 100%;">
+        <h3 style="font-size: 24px; margin-bottom: 20px; margin-top: 0px;"><strong>Real World Inversing</strong></h3>
+        <img src="./static/images/real_world_new.png" alt="Image 2" style="width: 100%;">
+        <p style="font-size: 18px; margin-top: 10px; text-align: left;">We present different real-world inversing cases under different lighting conditions. <strong>Best viewed in color.</strong></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+
+
+
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title">BibTeX</h2>
+    <pre><code>@article{chen2024uni,
+      title={Uni-Renderer: Unifying Rendering and Inverse Rendering Via Dual Stream Diffusion},
+      author={Chen, Zhifei and Xu, Tianshuo and Ge, Wenhang and Wu, Leyi and Yan, Dongyu and He, Jing and Wang, Luozhou and Zeng, Lu and Zhang, Shunsi and Chen, Yingcong},
+      journal={arXiv preprint arXiv:2412.15050},
+      year={2024}
+    }
+</code></pre>
+  </div>
+</section>
+
+
+<footer class="footer">
+  <div class="container">
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <p>
+            Thanks for <a rel="license"
+                                                href="https://keunhong.com/">Keunhong Park</a>'s <a rel="license"
+                                                href="https://nerfies.github.io/">Nerfies website template</a>.
+          </p>
+          <p>
+            Please contact <a rel="license" href="https://zhifeichen097.github.io/">Zhifei Chen</a> (email at
+            <a href="mailto:zchen379@connect.hkust-gz.edu.cn">zchen379@connect.hkust-gz.edu.cn</a>)
+            for feedback and questions.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
